@@ -1,3 +1,5 @@
+import NavBar from "../NavBar/NavBar";
+
 const Dashboard = () => {
     const storedUserString = localStorage.getItem('user');
     var storedUser;
@@ -8,7 +10,8 @@ const Dashboard = () => {
         }
   return (
     <>
-    <div>Dashboard</div>
+    <NavBar/>
+    <div className="DashBoard">Dashboard</div>
     <p>{storedUser.username}</p>
     </> 
   )

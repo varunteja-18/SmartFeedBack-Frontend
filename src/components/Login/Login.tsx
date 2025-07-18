@@ -4,7 +4,8 @@ import './Login.css';
 
 export default function Login(){
     const [formData, setFormData ] = useState( {email : '', password :''});
-    const [error, setError] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
     const navigate = useNavigate();
     const handleSubmit =(e:any) =>{
         e.preventDefault();
@@ -13,17 +14,35 @@ export default function Login(){
         if(storedUserString)
         {
             const storedUser = JSON.parse(storedUserString);
-            if(storedUser && storedUser.email === formData.email && storedUser.password === formData.password)
-            {
-                alert("login succefull");
-                navigate("/Dashboard");
+            if (storedUser.email === formData.email && storedUser.password === formData.password) {
+                setModalMessage('✅ Login Successful!');
+                setShowModal(true);
+                setTimeout(() => {
+                    setShowModal(false);
+                    navigate("/Dashboard");
+                }, 1500);
+            } 
+            else if(!(storedUser.email === formData.email && storedUser.password === formData.password)) {
+                setModalMessage('❌ Invalid Email or Password');
+                setShowModal(true);
+                setTimeout(() => setShowModal(false), 1500);
             }
-            else{
-                setError("Invalid email or password");
+            else if (formData.email==="admin@gmail.com" && formData.password==="admin@123") {
+                setModalMessage('✅ Admin Login Successful!');
+                setShowModal(true);
+                setTimeout(() => {
+                    setShowModal(false);
+                    navigate("/AdminDashboard");
+                }, 1500);
+            } else {
+                setModalMessage('❌ Invalid Email or Password');
+                setShowModal(true);
+                setTimeout(() => setShowModal(false), 1500);
             }
-        }
-        else{
-            setError("User not found. Please register first.");
+        } else {
+            setModalMessage('❌ User not found. Please register first.');
+            setShowModal(true);
+            setTimeout(() => setShowModal(false), 1500);
         }
         
     }
@@ -35,7 +54,14 @@ export default function Login(){
         <div className="loginContainer">
         <form onSubmit={handleSubmit}>
             <h1>Login</h1>
-            {error && <p>{error}</p>}
+             {showModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <p>{modalMessage}</p>
+                    </div>
+                </div>
+            )}
+            {/* {error && <p className="error-color">{error}</p>} */}
             <label className="form-label">Email address</label>
             <input 
             type="email"

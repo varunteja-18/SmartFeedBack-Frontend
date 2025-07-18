@@ -1,0 +1,40 @@
+.navbar {
+    background-color: #076161;
+    color: white;
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    margin-left: auto;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 30px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    margin-right: 50px;
+}
+
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-links li a:hover {
+    color:  #afeeee;
+    text-decoration: underline;
+}
+
+.page-content {
+    padding-top: 60px;  /* To avoid navbar overlap */
+}

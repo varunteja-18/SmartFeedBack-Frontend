@@ -22,12 +22,13 @@ export default function Login(){
                     navigate("/Dashboard");
                 }, 1500);
             } 
-            else if(!(storedUser.email === formData.email && storedUser.password === formData.password)) {
-                setModalMessage('❌ Invalid Email or Password');
-                setShowModal(true);
-                setTimeout(() => setShowModal(false), 1500);
-            }
+            // else if(!(storedUser.email === formData.email && storedUser.password === formData.password)) {
+            //     setModalMessage('❌ Invalid Email or Password');
+            //     setShowModal(true);
+            //     setTimeout(() => setShowModal(false), 1500);
+            // }
             else if (formData.email==="admin@gmail.com" && formData.password==="admin@123") {
+                localStorage.setItem("role","admin");
                 setModalMessage('✅ Admin Login Successful!');
                 setShowModal(true);
                 setTimeout(() => {

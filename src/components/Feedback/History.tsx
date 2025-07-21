@@ -1,12 +1,12 @@
 import NavBar from '../NavBar/NavBar'
 
 const History = () => {
-  return (
-    <>
-        <NavBar/>
-        <div>History</div>
-    </>
-  )
+    return (
+      <>
+      <NavBar/>
+      
+      </> 
+    )
 }
 
 export default History

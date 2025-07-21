@@ -13,6 +13,7 @@ export default function Register(){
     const handleSubmit =(e:any) =>{
         e.preventDefault();
         localStorage.setItem('user', JSON.stringify(formData));
+        localStorage.setItem('role', 'user');
         setModalMessage('✅ Registration successfull!');
         setShowModal(true);
         setTimeout(() => {

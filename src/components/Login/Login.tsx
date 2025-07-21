@@ -9,8 +9,8 @@ export default function Login(){
     const navigate = useNavigate();
     const handleSubmit =(e:any) =>{
         e.preventDefault();
-        // console.log(e.target.email.value);
         const storedUserString = localStorage.getItem('user');
+        
         if(storedUserString)
         {
             const storedUser = JSON.parse(storedUserString);
@@ -19,21 +19,16 @@ export default function Login(){
                 setShowModal(true);
                 setTimeout(() => {
                     setShowModal(false);
-                    navigate("/Dashboard");
+                    navigate("/Feedback");
                 }, 1500);
             } 
-            // else if(!(storedUser.email === formData.email && storedUser.password === formData.password)) {
-            //     setModalMessage('❌ Invalid Email or Password');
-            //     setShowModal(true);
-            //     setTimeout(() => setShowModal(false), 1500);
-            // }
             else if (formData.email==="admin@gmail.com" && formData.password==="admin@123") {
                 localStorage.setItem("role","admin");
                 setModalMessage('✅ Admin Login Successful!');
                 setShowModal(true);
                 setTimeout(() => {
                     setShowModal(false);
-                    navigate("/AdminDashboard");
+                    navigate("/AllFeedBacks");
                 }, 1500);
             } else {
                 setModalMessage('❌ Invalid Email or Password');

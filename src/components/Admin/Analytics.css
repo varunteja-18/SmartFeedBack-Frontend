@@ -1,0 +1,59 @@
+.analytics-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.total-count {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.feedback-table-section {
+  margin-top: 30px;
+}
+
+.feedback-table {
+  width: 50%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-table th,
+.feedback-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.btn-row {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.clear-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.pdf-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.csv-btn {
+  background-color: #2196f3;
+  color: white;
+}

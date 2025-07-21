@@ -1,0 +1,50 @@
+.history-container {
+  padding: 20px;
+  text-align: center;
+}
+
+
+.feedback-table {
+  width: 50%;               /* Set table width to 50% of screen */
+  margin: 0 auto;           /* Center the table */
+  border-collapse: collapse;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  border-style: solid;
+  /* border-width: 1px; */
+  border-color: rgb(7, 97, 97);
+  table-layout: fixed;      /* Allows column widths to be controlled */
+}
+
+.feedback-table th,
+.feedback-table td {
+  border: 1px solid #ccc;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 16px;
+  word-wrap: break-word;    /* Allows long text to wrap */
+  border-color: rgb(7, 97, 97);
+
+}
+
+.feedback-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.feedback-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Specific column widths */
+.feedback-table th:nth-child(1),
+.feedback-table td:nth-child(1) {
+  width: 20%;      
+  text-align: center;
+           /* Category column */
+}
+
+.feedback-table th:nth-child(2),
+.feedback-table td:nth-child(2) {
+  width: 80%;               /* Comment column */
+  text-align: center;
+}

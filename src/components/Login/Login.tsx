@@ -15,6 +15,7 @@ export default function Login(){
         {
             const storedUser = JSON.parse(storedUserString);
             if (storedUser.email === formData.email && storedUser.password === formData.password) {
+                localStorage.setItem("role", "user");
                 setModalMessage('✅ Login Successful!');
                 setShowModal(true);
                 setTimeout(() => {

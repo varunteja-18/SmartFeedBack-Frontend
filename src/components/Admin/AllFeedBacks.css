@@ -1,0 +1,54 @@
+.all-feedbacks-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.feedback-table {
+  width: 50%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  border-style: solid;
+  border-color: rgb(7, 97, 97);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  table-layout: fixed;
+}
+
+.feedback-table th,
+.feedback-table td {
+  border: 1px solid rgb(7, 97, 97);
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 16px;
+  word-wrap: break-word;
+}
+
+.feedback-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.feedback-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Column widths */
+.feedback-table th:nth-child(1),
+.feedback-table td:nth-child(1) {
+  width: 20%; /* User */
+  text-align: center;
+
+}
+
+.feedback-table th:nth-child(2),
+.feedback-table td:nth-child(2) {
+  width: 15%; /* Category */
+  text-align: center;
+
+}
+
+.feedback-table th:nth-child(3),
+.feedback-table td:nth-child(3) {
+  width: 65%; /* Comment */
+  text-align: center;
+
+}

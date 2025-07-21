@@ -6,18 +6,31 @@ const Feedback = () => {
   const [formData, setFormData ] = useState( {category:'', comment:'' });
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const handleSubmit = (event:any) => {
-    event.preventDefault();
-    localStorage.setItem('feedback',JSON.stringify(formData));
-    setModalMessage('✅ feedback successfull!');
-        setShowModal(true);
-        setFormData({ category: '', comment: '' });
-        setTimeout(() => { setShowModal(false); }, 1500);
-    // alert("feedback successfull");
-    
-    // console.log(formData);
-    // console.log(event.target.comment.value);
-  };
+ const handleSubmit = (event: any) => {
+   event.preventDefault();
+
+   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+   const fullFeedback = {
+     username: currentUser.username,
+     ...formData,
+   };
+
+   const existingFeedbacks = JSON.parse(
+     localStorage.getItem("allFeedbacks") || "[]"
+   );
+   existingFeedbacks.push(fullFeedback);
+   localStorage.setItem("allFeedbacks", JSON.stringify(existingFeedbacks));
+
+  //  localStorage.setItem("feedback", JSON.stringify(formData)); // still storing for user history
+
+   setModalMessage("✅ Feedback successful!");
+   setShowModal(true);
+   setFormData({ category: "", comment: "" });
+   setTimeout(() => {
+     setShowModal(false);
+   }, 1500);
+ };
+
   const handleChange =(e:any) =>{
           const {name,value}=e.target;
           setFormData({...formData,[name]:value})

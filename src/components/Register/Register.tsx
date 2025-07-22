@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import './Register.css';
+import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
+
 
 
 export default function Register(){
@@ -10,17 +13,23 @@ export default function Register(){
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     // const [error, setError] = useState('');
-    const handleSubmit =(e:any) =>{
-        e.preventDefault();
-        localStorage.setItem('user', JSON.stringify(formData));
-        localStorage.setItem('role', 'user');
-        setModalMessage('✅ Registration successfull!');
-        setShowModal(true);
-        setTimeout(() => {
-                    setShowModal(false);
-                    navigate("/login");  // Redirect to Login page after registration
-                }, 1500);
+    
+const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      const response = await axiosInstance.post("/auth/register", formData);
+      setModalMessage(response.data.message || "✅ Registration successful!");
+      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+        navigate("/login");
+      }, 1500);
+    } catch (error: any) {
+      setModalMessage(error.response?.data?.message || "❌ Registration failed");
+      setShowModal(true);
     }
+  };
+
     const handleChange =(e:any) =>{
         const {name,value}=e.target;
         setFormData({...formData,[name]:value})

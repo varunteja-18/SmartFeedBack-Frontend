@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./AllFeedbacks.css";
+import axiosInstance from "../../api/axiosInstance";
 
 interface FeedbackItem {
   username: string;
@@ -10,12 +11,20 @@ interface FeedbackItem {
 
 const AllFeedBacks = () => {
   const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const storedFeedbacks = localStorage.getItem("allFeedbacks");
-    if (storedFeedbacks) {
-      setFeedbacks(JSON.parse(storedFeedbacks));
-    }
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await axiosInstance.get("/feedback/all"); // 👈 Adjust endpoint name if needed
+        setFeedbacks(response.data);
+      } catch (err: any) {
+        console.error("Failed to fetch feedbacks:", err);
+        setError("Failed to load feedbacks. You may not be authorized.");
+      }
+    };
+
+    fetchFeedbacks();
   }, []);
 
   return (
@@ -23,6 +32,9 @@ const AllFeedBacks = () => {
       <NavBar />
       <div className="all-feedbacks-container">
         <h2>All User Feedbacks</h2>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
         {feedbacks.length > 0 ? (
           <table className="feedback-table">
             <thead>
@@ -42,9 +54,9 @@ const AllFeedBacks = () => {
               ))}
             </tbody>
           </table>
-        ) : (
+        ) : !error ? (
           <p>No feedbacks submitted yet.</p>
-        )}
+        ) : null}
       </div>
     </>
   );

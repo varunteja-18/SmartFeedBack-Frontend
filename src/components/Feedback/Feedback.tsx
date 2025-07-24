@@ -1,35 +1,32 @@
 import { useState } from 'react';
 import NavBar from '../NavBar/NavBar'
 import './Feedback.css'
+import axiosInstance from '../../api/axiosInstance';
+
 
 const Feedback = () => {
   const [formData, setFormData ] = useState( {category:'', comment:'' });
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
- const handleSubmit = (event: any) => {
-   event.preventDefault();
 
-   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-   const fullFeedback = {
-     username: currentUser.username,
-     ...formData,
-   };
+const handleSubmit = async (event: any) => {
+  event.preventDefault();
 
-   const existingFeedbacks = JSON.parse(
-     localStorage.getItem("allFeedbacks") || "[]"
-   );
-   existingFeedbacks.push(fullFeedback);
-   localStorage.setItem("allFeedbacks", JSON.stringify(existingFeedbacks));
+  try {
+    await axiosInstance.post("/feedback", formData); // API endpoint must exist in backend
 
-  //  localStorage.setItem("feedback", JSON.stringify(formData)); // still storing for user history
+    setModalMessage("✅ Feedback submitted successfully!");
+    setShowModal(true);
+    setFormData({ category: "", comment: "" });
 
-   setModalMessage("✅ Feedback successful!");
-   setShowModal(true);
-   setFormData({ category: "", comment: "" });
-   setTimeout(() => {
-     setShowModal(false);
-   }, 1500);
- };
+    setTimeout(() => setShowModal(false), 1500);
+  } catch (error) {
+    setModalMessage("❌ Submission failed. Try again.");
+    setShowModal(true);
+    setTimeout(() => setShowModal(false), 2000);
+  }
+};
+
 
   const handleChange =(e:any) =>{
           const {name,value}=e.target;

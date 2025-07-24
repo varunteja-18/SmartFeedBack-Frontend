@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./History.css";
+import axiosInstance from "../../api/axiosInstance";
 
 interface FeedbackItem {
   username: string;
@@ -10,19 +11,17 @@ interface FeedbackItem {
 
 const History = () => {
   const [userFeedbacks, setUserFeedbacks] = useState<FeedbackItem[]>([]);
-
   useEffect(() => {
-    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-    const allFeedbacks = JSON.parse(
-      localStorage.getItem("allFeedbacks") || "[]"
-    );
+    const fetchFeedback = async () => {
+      try {
+        const response = await axiosInstance.get("/feedback/user"); // API must return user's feedback
+        setUserFeedbacks(response.data);
+      } catch (error) {
+        console.error("Failed to fetch feedback history", error);
+      }
+    };
 
-    const filtered = allFeedbacks.filter(
-      (feedback: FeedbackItem) => feedback.username === currentUser.username
-    );
-
-
-    setUserFeedbacks(filtered);
+    fetchFeedback();
   }, []);
 
   return (

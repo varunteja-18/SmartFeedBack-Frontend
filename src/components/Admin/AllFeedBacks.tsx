@@ -16,7 +16,7 @@ const AllFeedBacks = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await axiosInstance.get("/feedback/all"); // 👈 Adjust endpoint name if needed
+        const response = await axiosInstance.get("/feedback/all"); 
         setFeedbacks(response.data);
       } catch (err: any) {
         console.error("Failed to fetch feedbacks:", err);

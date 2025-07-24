@@ -102,10 +102,11 @@ const Analytics = () => {
           cx={props.cx}
           cy={props.cy}
           innerRadius={props.innerRadius}
-          outerRadius={props.outerRadius + 10}
+          outerRadius={props.outerRadius }
           startAngle={props.startAngle}
           endAngle={props.endAngle}
           fill={props.fill}
+          stroke="none"
         />
         <path
           d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}

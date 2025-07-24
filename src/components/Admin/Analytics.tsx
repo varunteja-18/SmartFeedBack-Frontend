@@ -13,6 +13,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { CSVLink } from "react-csv";
 import "./Analytics.css";
+import axiosInstance from "../../api/axiosInstance";
 
 interface FeedbackItem {
   username: string;
@@ -26,35 +27,42 @@ const Analytics = () => {
   const [data, setData] = useState<{ name: string; value: number }[]>([]);
   const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  // const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    const allFeedbacks: FeedbackItem[] = JSON.parse(
-      localStorage.getItem("allFeedbacks") || "[]"
-    );
-    setFeedbacks(allFeedbacks);
+  const fetchFeedbacks = async () => {
+    try {
+      const response = await axiosInstance.get("/feedback/all");
+      const allFeedbacks: FeedbackItem[] = response.data;
+      setFeedbacks(allFeedbacks);
 
-    const categoryCount: { [key: string]: number } = {};
-    allFeedbacks.forEach((fb) => {
-      categoryCount[fb.category] = (categoryCount[fb.category] || 0) + 1;
-    });
+      const categoryCount: { [key: string]: number } = {};
+      allFeedbacks.forEach((fb) => {
+        categoryCount[fb.category] = (categoryCount[fb.category] || 0) + 1;
+      });
 
-    const pieData = Object.keys(categoryCount).map((key) => ({
-      name: key,
-      value: categoryCount[key],
-    }));
+      const pieData = Object.keys(categoryCount).map((key) => ({
+        name: key,
+        value: categoryCount[key],
+      }));
 
-    setData(pieData);
-  }, []);
+      setData(pieData);
+    } catch (error) {
+      console.error("Failed to fetch feedbacks:", error);
+    }
+  };
 
-  const handlePieClick = (entry: any, index: number) => {
+  fetchFeedbacks();
+}, []);
+
+  const handlePieClick = (entry: any) => {
     setSelectedCategory(entry.name);
-    setActiveIndex(index);
+    // setActiveIndex(index);
   };
 
   const handleClearSelection = () => {
     setSelectedCategory(null);
-    setActiveIndex(null);
+    // setActiveIndex(null);
   };
 
   const handleExportPDF = () => {
@@ -90,9 +98,6 @@ const Analytics = () => {
 
     return (
       <g>
-        <text x={props.cx} y={props.cy} dy={8} textAnchor="middle" fill="#333">
-          {props.name}
-        </text>
         <Sector
           cx={props.cx}
           cy={props.cy}
@@ -126,7 +131,8 @@ const Analytics = () => {
         <p className="total-count">📊 Total Feedbacks: {feedbacks.length}</p>
 
         {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={400}>
+          // <div className="pie-represent">
+          <ResponsiveContainer width="100%" height={450}>
             <PieChart>
               <Pie
                 dataKey="value"
@@ -147,6 +153,7 @@ const Analytics = () => {
               <Legend />
             </PieChart>
           </ResponsiveContainer>
+            // </div>
         ) : (
           <p>No feedbacks available to analyze.</p>
         )}

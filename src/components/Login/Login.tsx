@@ -16,19 +16,22 @@ export default function Login(){
 
       // Save token and user info
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("email", response.data.email);
-      localStorage.setItem("username", response.data.username);
       localStorage.setItem("role", response.data.role);
+      var temp={email:response.data.email,username:response.data.username}
+      localStorage.setItem("user",JSON.stringify(temp));
 
       setModalMessage("✅ Login successful!");
       setShowModal(true);
       setTimeout(() => {
         setShowModal(false);
-        navigate(response.data.role === "admin" ? "/admin" : "/user");
+        navigate(response.data.role === "admin" ? "/AllFeedBacks" : "/Feedback");
       }, 1500);
     } catch (error: any) {
       setModalMessage(error.response?.data?.message || "❌ Login failed");
       setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+      }, 1500);
     }
   };
 

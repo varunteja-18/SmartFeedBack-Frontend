@@ -21,6 +21,7 @@ const History = () => {
       (feedback: FeedbackItem) => feedback.username === currentUser.username
     );
 
+
     setUserFeedbacks(filtered);
   }, []);
 

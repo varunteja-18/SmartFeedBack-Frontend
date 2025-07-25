@@ -27,7 +27,7 @@ const Analytics = () => {
   const [data, setData] = useState<{ name: string; value: number }[]>([]);
   const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  // const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
 
   useEffect(() => {
   const fetchFeedbacks = async () => {
@@ -55,15 +55,16 @@ const Analytics = () => {
   fetchFeedbacks();
 }, []);
 
-  const handlePieClick = (entry: any) => {
-    setSelectedCategory(entry.name);
-    // setActiveIndex(index);
-  };
+ 
+const handlePieClick = (_: any, index: number) => {
+  setSelectedCategory(data[index].name);
+  setActiveIndex(index);
+};
 
-  const handleClearSelection = () => {
-    setSelectedCategory(null);
-    // setActiveIndex(null);
-  };
+const handleClearSelection = () => {
+  setSelectedCategory(null);
+  setActiveIndex(0);
+};
 
   const handleExportPDF = () => {
     const doc = new jsPDF();
@@ -135,24 +136,28 @@ const Analytics = () => {
           // <div className="pie-represent">
           <ResponsiveContainer width="100%" height={450}>
             <PieChart>
-              <Pie
-                dataKey="value"
-                data={data}
-                cx="50%"
-                cy="50%"
-                outerRadius={130}
-                label
-                onClick={handlePieClick}
-                
-                activeShape={renderActiveShape}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
+                <Pie
+                  dataKey="value"
+                  data={data}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={130}
+                  label
+                  onClick={handlePieClick}
+                  // activeIndex={activeIndex ?? -1}
+                >
+                  {data.map((entry, index) => (
+                    <Cell
+                      key={index}
+                      fill={COLORS[index % COLORS.length]}
+                      stroke="none"
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+
           </ResponsiveContainer>
             // </div>
         ) : (

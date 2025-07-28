@@ -60,7 +60,7 @@ const handleSubmit = async (event: any) => {
             <option value="Manager">Manager</option>
           </select>
           <br />
-          <label htmlFor="comment">Comment:</label>
+          <label htmlFor="comment">Feedback:</label>
           <textarea
             id="comment"
             name="comment"

@@ -1,30 +1,47 @@
-import { useState } from "react"
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import './Login.css';
+import "./Login.css";
 import axiosInstance from "../../api/axiosInstance";
 
-export default function Login(){
-    const [formData, setFormData ] = useState( {email : '', password :''});
-    const [showModal, setShowModal] = useState(false);
-    const [modalMessage, setModalMessage] = useState("");
-    const navigate = useNavigate();
+export default function Login() {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    // Password validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      setModalMessage(
+        "❌ Invalid password format. Use 8+ chars with uppercase, lowercase, number & special character."
+      );
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 3000);
+      return;
+    }
+
     try {
       const response = await axiosInstance.post("/auth/login", formData);
 
       // Save token and user info
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
-      var temp={email:response.data.email,username:response.data.username}
-      localStorage.setItem("user",JSON.stringify(temp));
+      const temp = {
+        email: response.data.email,
+        username: response.data.username,
+      };
+      localStorage.setItem("user", JSON.stringify(temp));
 
       setModalMessage("✅ Login successful!");
       setShowModal(true);
       setTimeout(() => {
         setShowModal(false);
-        navigate(response.data.role === "admin" ? "/AllFeedBacks" : "/Feedback");
+        navigate(
+          response.data.role === "admin" ? "/AllFeedBacks" : "/Feedback"
+        );
       }, 1500);
     } catch (error: any) {
       setModalMessage(error.response?.data?.message || "❌ Login failed");
@@ -35,47 +52,49 @@ export default function Login(){
     }
   };
 
-    const handleChange = (e: any) => {
-      const { name, value } = e.target;
-      setFormData({ ...formData, [name]: value });
-    };
-    return (
-      <div className="loginContainer">
-        <form onSubmit={handleSubmit}>
-          <h1>Login</h1>
-          {showModal && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <p>{modalMessage}</p>
-              </div>
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  return (
+    <div className="loginContainer">
+      <form onSubmit={handleSubmit}>
+        <h1>Login</h1>
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <p>{modalMessage}</p>
             </div>
-          )}
-          {/* {error && <p className="error-color">{error}</p>} */}
-          <label className="form-label">Email address</label>
-          <input
-            type="email"
-            name="email"
-            onChange={handleChange}
-            value={formData.email}
-            placeholder="email"
-            required
-          />
-          <br />
-          <label className="form-label">Password</label>
-          <input
-            type="password"
-            name="password"
-            onChange={handleChange}
-            value={formData.password}
-            placeholder="password"
-            required
-          />
-          <br />
-          <button type="submit">Login</button>
-          <p>
-            Don't have Account? <Link to="/Register">Register</Link>
-          </p>
-        </form>
-      </div>
-    );
+          </div>
+        )}
+        <label className="form-label">Email address</label>
+        <input
+          type="email"
+          name="email"
+          onChange={handleChange}
+          value={formData.email}
+          placeholder="email"
+          required
+        />
+        <br />
+        <label className="form-label">Password</label>
+        <input
+          type="password"
+          name="password"
+          onChange={handleChange}
+          value={formData.password}
+          placeholder="password"
+          required
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
+          title="Use 8+ characters with uppercase, lowercase, number, and special character"
+        />
+        <br />
+        <button type="submit">Login</button>
+        <p>
+          Don't have Account? <Link to="/Register">Register</Link>
+        </p>
+      </form>
+    </div>
+  );
 }

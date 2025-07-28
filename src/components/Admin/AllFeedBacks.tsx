@@ -41,7 +41,7 @@ const AllFeedBacks = () => {
               <tr>
                 <th>User</th>
                 <th>Category</th>
-                <th>Comment</th>
+                <th>Feedback</th>
               </tr>
             </thead>
             <tbody>

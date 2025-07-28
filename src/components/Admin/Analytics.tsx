@@ -75,7 +75,7 @@ const handleClearSelection = () => {
       fb.comment,
     ]);
     autoTable(doc, {
-      head: [["User", "Category", "Comment"]],
+      head: [["User", "Category", "Feedback"]],
       body: rows,
     });
     doc.save(`feedbacks_${selectedCategory}.pdf`);
@@ -179,7 +179,7 @@ const handleClearSelection = () => {
                 headers={[
                   { label: "User", key: "username" },
                   { label: "Category", key: "category" },
-                  { label: "Comment", key: "comment" },
+                  { label: "Feedback", key: "comment" },
                 ]}
                 filename={`feedbacks_${selectedCategory}.csv`}
                 className="btn csv-btn"
@@ -193,7 +193,7 @@ const handleClearSelection = () => {
                 <tr>
                   <th>User</th>
                   <th>Category</th>
-                  <th>Comment</th>
+                  <th>Feedback</th>
                 </tr>
               </thead>
               <tbody>

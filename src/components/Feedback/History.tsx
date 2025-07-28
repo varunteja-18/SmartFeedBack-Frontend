@@ -34,7 +34,7 @@ const History = () => {
             <thead>
               <tr>
                 <th>Category</th>
-                <th>Comment</th>
+                <th>Feedback</th>
               </tr>
             </thead>
             <tbody>

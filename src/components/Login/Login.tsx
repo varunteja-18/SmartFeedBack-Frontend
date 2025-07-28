@@ -2,53 +2,57 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import axiosInstance from "../../api/axiosInstance";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    // Password validation
+    const { email, password } = formData;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    if (!passwordRegex.test(formData.password)) {
-      setModalMessage(
-        "❌ Invalid password format. Use 8+ chars with uppercase, lowercase, number & special character."
+
+    if (!email || !password) {
+      toast.error("❌ Email and password are required!");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      toast.error("❌ Please enter a valid email address!");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      toast.error(
+        "❌ Password must be 8+ characters with uppercase, lowercase, number, and special character."
       );
-      setShowModal(true);
-      setTimeout(() => setShowModal(false), 3000);
       return;
     }
 
     try {
       const response = await axiosInstance.post("/auth/login", formData);
 
-      // Save token and user info
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
-      const temp = {
+      const userData = {
         email: response.data.email,
         username: response.data.username,
       };
-      localStorage.setItem("user", JSON.stringify(temp));
+      localStorage.setItem("user", JSON.stringify(userData));
 
-      setModalMessage("✅ Login successful!");
-      setShowModal(true);
+      toast.success("✅ Login successful!");
       setTimeout(() => {
-        setShowModal(false);
         navigate(
           response.data.role === "admin" ? "/AllFeedBacks" : "/Feedback"
         );
       }, 1500);
     } catch (error: any) {
-      setModalMessage(error.response?.data?.message || "❌ Login failed");
-      setShowModal(true);
-      setTimeout(() => {
-        setShowModal(false);
-      }, 1500);
+      toast.error(error.response?.data?.message || "❌ Login failed");
     }
   };
 
@@ -60,39 +64,34 @@ export default function Login() {
   return (
     <div className="loginContainer">
       <form onSubmit={handleSubmit}>
+        <ToastContainer position="top-right" autoClose={3000} />
         <h1>Login</h1>
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <p>{modalMessage}</p>
-            </div>
-          </div>
-        )}
+
         <label className="form-label">Email address</label>
         <input
-          type="email"
+          type="text"
           name="email"
           onChange={handleChange}
           value={formData.email}
-          placeholder="email"
-          required
+          placeholder="Email"
+          // required
         />
         <br />
+
         <label className="form-label">Password</label>
         <input
           type="password"
           name="password"
           onChange={handleChange}
           value={formData.password}
-          placeholder="password"
-          required
-          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
-          title="Use 8+ characters with uppercase, lowercase, number, and special character"
+          placeholder="Password"
+          // required
         />
         <br />
+
         <button type="submit">Login</button>
         <p>
-          Don't have Account? <Link to="/Register">Register</Link>
+          Don't have an account? <Link to="/Register">Register</Link>
         </p>
       </form>
     </div>

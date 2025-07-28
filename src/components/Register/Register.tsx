@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
 import axiosInstance from "../../api/axiosInstance";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -10,40 +12,39 @@ export default function Register() {
     password: "",
   });
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    // Password validation
+    const { username, email, password } = formData;
+
+    // Email and password regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    if (!passwordRegex.test(formData.password)) {
-      setModalMessage(
-        "❌ Password must be at least 8 characters and include uppercase, lowercase, number, and special character."
+
+    if (!username || !email || !password) {
+      toast.error("❌ All fields are required!");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      toast.error("❌ Please enter a valid email address!");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      toast.error(
+        "❌ Password must be 8+ characters with uppercase, lowercase, number, and special character."
       );
-      setShowModal(true);
-      setTimeout(() => setShowModal(false), 3000);
       return;
     }
 
     try {
       const response = await axiosInstance.post("/auth/register", formData);
-      setModalMessage(response.data.message || "✅ Registration successful!");
-      setShowModal(true);
-      setTimeout(() => {
-        setShowModal(false);
-        navigate("/login");
-      }, 1500);
+      toast.success(response.data.message || "✅ Registration successful!");
+      setTimeout(() => navigate("/login"), 1500);
     } catch (error: any) {
-      setModalMessage(
-        error.response?.data?.message || "❌ Registration failed"
-      );
-      setShowModal(true);
-      setTimeout(() => {
-        setShowModal(false);
-        navigate("/Register");
-      }, 1500);
+      toast.error(error.response?.data?.message || "❌ Registration failed");
     }
   };
 
@@ -55,14 +56,9 @@ export default function Register() {
   return (
     <div className="RegisterContainer">
       <form onSubmit={handleSubmit}>
+        <ToastContainer position="top-right" autoClose={3000} />
         <h1>Register</h1>
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <p>{modalMessage}</p>
-            </div>
-          </div>
-        )}
+
         <label className="form-label">User Name</label>
         <input
           type="text"
@@ -70,17 +66,17 @@ export default function Register() {
           onChange={handleChange}
           value={formData.username}
           placeholder="Name"
-          required
+          // required
         />
         <br />
         <label className="form-label">Email address</label>
         <input
-          type="email"
+          type="text"
           name="email"
           onChange={handleChange}
           value={formData.email}
-          placeholder="email"
-          required
+          placeholder="Email"
+          // required
         />
         <br />
         <label className="form-label">Password</label>
@@ -89,15 +85,13 @@ export default function Register() {
           name="password"
           onChange={handleChange}
           value={formData.password}
-          placeholder="password"
-          required
-          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
-          title="Use 8+ characters with uppercase, lowercase, number, and special character"
+          placeholder="Password"
+          // required
         />
         <br />
         <button type="submit">Register</button>
         <p>
-          Already Registered ? <Link to="/Login">Login</Link>
+          Already Registered? <Link to="/Login">Login</Link>
         </p>
       </form>
     </div>

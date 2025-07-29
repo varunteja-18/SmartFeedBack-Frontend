@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   PieChart,
   Pie,
@@ -14,6 +14,8 @@ import autoTable from "jspdf-autotable";
 import { CSVLink } from "react-csv";
 import "./Analytics.css";
 import axiosInstance from "../../api/axiosInstance";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface FeedbackItem {
   username: string;
@@ -23,48 +25,57 @@ interface FeedbackItem {
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
+// Custom active shape (no stroke box)
+const renderActiveShape = (props: any) => {
+  return <Sector {...props} stroke="none" />;
+};
+
 const Analytics = () => {
-  const [data, setData] = useState<{ name: string; value: number }[]>([]);
   const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number>(-1);
+  // const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(-1); // use -1 instead of null
+
 
   useEffect(() => {
-  const fetchFeedbacks = async () => {
-    try {
-      const response = await axiosInstance.get("/feedback/all");
-      const allFeedbacks: FeedbackItem[] = response.data;
-      setFeedbacks(allFeedbacks);
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await axiosInstance.get("/feedback/all");
+        setFeedbacks(response.data);
+      } catch (error) {
+        console.error("Failed to fetch feedbacks:", error);
+      }
+    };
 
-      const categoryCount: { [key: string]: number } = {};
-      allFeedbacks.forEach((fb) => {
-        categoryCount[fb.category] = (categoryCount[fb.category] || 0) + 1;
-      });
+    fetchFeedbacks();
+  }, []);
 
-      const pieData = Object.keys(categoryCount).map((key) => ({
-        name: key,
-        value: categoryCount[key],
-      }));
+  const pieData = useMemo(() => {
+    const categoryCount: { [key: string]: number } = {};
+    feedbacks.forEach((fb) => {
+      categoryCount[fb.category] = (categoryCount[fb.category] || 0) + 1;
+    });
 
-      setData(pieData);
-    } catch (error) {
-      console.error("Failed to fetch feedbacks:", error);
-    }
+    return Object.keys(categoryCount).map((key) => ({
+      name: key,
+      value: categoryCount[key],
+    }));
+  }, [feedbacks]);
+
+  const handlePieClick = (_: any, index: number) => {
+    setActiveIndex(index);
+    setSelectedCategory(pieData[index].name);
   };
 
-  fetchFeedbacks();
-}, []);
+  const handleClearSelection = () => {
+    setSelectedCategory(null);
+    setActiveIndex(-1); // reset to -1
+    toast.info("Selection cleared.");
+  };
 
- 
-const handlePieClick = (_: any, index: number) => {
-  setSelectedCategory(data[index].name);
-  setActiveIndex(index);
-};
-
-const handleClearSelection = () => {
-  setSelectedCategory(null);
-  setActiveIndex(0);
-};
+  const filteredFeedbacks = selectedCategory
+    ? feedbacks.filter((fb) => fb.category === selectedCategory)
+    : [];
 
   const handleExportPDF = () => {
     const doc = new jsPDF();
@@ -79,50 +90,7 @@ const handleClearSelection = () => {
       body: rows,
     });
     doc.save(`feedbacks_${selectedCategory}.pdf`);
-  };
-
-  const filteredFeedbacks = selectedCategory
-    ? feedbacks.filter((fb) => fb.category === selectedCategory)
-    : [];
-
-  const renderActiveShape = (props: any) => {
-    const RADIAN = Math.PI / 180;
-    const sin = Math.sin(-RADIAN * props.midAngle);
-    const cos = Math.cos(-RADIAN * props.midAngle);
-    const sx = props.cx + (props.outerRadius + 10) * cos;
-    const sy = props.cy + (props.outerRadius + 10) * sin;
-    const mx = props.cx + (props.outerRadius + 30) * cos;
-    const my = props.cy + (props.outerRadius + 30) * sin;
-    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-    const ey = my;
-    const textAnchor = cos >= 0 ? "start" : "end";
-
-    return (
-      <g>
-        <Sector
-          cx={props.cx}
-          cy={props.cy}
-          innerRadius={props.innerRadius}
-          outerRadius={props.outerRadius }
-          startAngle={props.startAngle}
-          endAngle={props.endAngle}
-          fill={props.fill}
-          stroke="none"
-        />
-        <path
-          d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-          stroke={props.fill}
-          fill="none"
-        />
-        <circle cx={ex} cy={ey} r={2} fill={props.fill} stroke="none" />
-        <text
-          x={ex + (cos >= 0 ? 1 : -1) * 12}
-          y={ey}
-          textAnchor={textAnchor}
-          fill="#333"
-        >{`Count: ${props.value}`}</text>
-      </g>
-    );
+    toast.success("📄 PDF exported successfully!");
   };
 
   return (
@@ -132,34 +100,32 @@ const handleClearSelection = () => {
         <h2>Feedback Category Distribution</h2>
         <p className="total-count">📊 Total Feedbacks: {feedbacks.length}</p>
 
-        {data.length > 0 ? (
-          // <div className="pie-represent">
+        {pieData.length > 0 ? (
           <ResponsiveContainer width="100%" height={450}>
             <PieChart>
-                <Pie
-                  dataKey="value"
-                  data={data}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={130}
-                  label
-                  onClick={handlePieClick}
-                  // activeIndex={activeIndex ?? -1}
-                >
-                  {data.map((entry, index) => (
-                    <Cell
-                      key={index}
-                      fill={COLORS[index % COLORS.length]}
-                      stroke="none"
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-
+              <Pie
+                dataKey="value"
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                outerRadius={130}
+                label
+                onClick={handlePieClick}
+                // activeIndex={activeIndex}
+                activeShape={renderActiveShape}
+              >
+                {pieData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                    stroke="none"
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
           </ResponsiveContainer>
-            // </div>
         ) : (
           <p>No feedbacks available to analyze.</p>
         )}
@@ -183,6 +149,7 @@ const handleClearSelection = () => {
                 ]}
                 filename={`feedbacks_${selectedCategory}.csv`}
                 className="btn csv-btn"
+                onClick={() => toast.success("📁 CSV export initiated!")}
               >
                 Export CSV
               </CSVLink>
@@ -209,6 +176,7 @@ const handleClearSelection = () => {
           </div>
         )}
       </div>
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </>
   );
 };

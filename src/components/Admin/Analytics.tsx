@@ -54,6 +54,7 @@ const Analytics = () => {
 
   fetchFeedbacks();
 }, []);
+ 
 
  
 const handlePieClick = (_: any, index: number) => {

@@ -59,8 +59,9 @@ export default function Register() {
         <ToastContainer position="top-right" autoClose={3000} />
         <h1>Register</h1>
 
-        <label className="form-label">User Name</label>
+        <label htmlFor="username" className="form-label">User Name</label>
         <input
+          id="username"
           type="text"
           name="username"
           onChange={handleChange}
@@ -69,8 +70,9 @@ export default function Register() {
           // required
         />
         <br />
-        <label className="form-label">Email address</label>
+        <label htmlFor="email" className="form-label">Email address</label>
         <input
+          id="email"
           type="text"
           name="email"
           onChange={handleChange}
@@ -79,8 +81,9 @@ export default function Register() {
           // required
         />
         <br />
-        <label className="form-label">Password</label>
+        <label htmlFor="password" className="form-label">Password</label>
         <input
+          id="password"
           type="password"
           name="password"
           onChange={handleChange}

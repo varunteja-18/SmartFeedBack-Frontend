@@ -58,7 +58,7 @@ const handleSubmit = async (event: any) => {
                     </div>
                 </div>
             )} */}
-          <label htmlFor="dropdown">Choose Category:</label>
+          <label htmlFor="category">Choose Category:</label>
           <select
             // value="{selectedOption}"
             id="category"

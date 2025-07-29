@@ -16,7 +16,7 @@ export default function App() {
   return (
     <>
       <div className="page-content">
-        <Router>
+        {/* <Router> */}
           <Routes>
             <Route path="/" element={<Navigate to="/Login" />} />
             <Route path="/Login" element={<Login />} />
@@ -26,10 +26,10 @@ export default function App() {
             <Route path="/History" element={<History />} />
             <Route path="/AllFeedBacks" element={<AllFeedBacks />} />
             <Route path="/Analytics" element={<Analytics />} />
-
+             <Route path="*" element={<div>404 - Page not found</div>} /> 
             {/* <Route path="/AdminDashboard" element={<AdminDashboard/>}/> */}
           </Routes>
-        </Router>
+        {/* </Router> */}
       </div>
     </>
   );

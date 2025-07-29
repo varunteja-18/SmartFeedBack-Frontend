@@ -67,8 +67,9 @@ export default function Login() {
         <ToastContainer position="top-right" autoClose={3000} />
         <h1>Login</h1>
 
-        <label className="form-label">Email address</label>
+        <label htmlFor="email" className="form-label">Email address</label>
         <input
+          id="email"
           type="text"
           name="email"
           onChange={handleChange}
@@ -78,8 +79,9 @@ export default function Login() {
         />
         <br />
 
-        <label className="form-label">Password</label>
+        <label htmlFor="password" className="form-label">Password</label>
         <input
+          id="password"
           type="password"
           name="password"
           onChange={handleChange}

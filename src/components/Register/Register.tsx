@@ -23,28 +23,28 @@ export default function Register() {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
     if (!username || !email || !password) {
-      toast.error("❌ All fields are required!");
+      toast.error("All fields are required!");
       return;
     }
 
     if (!emailRegex.test(email)) {
-      toast.error("❌ Please enter a valid email address!");
+      toast.error("Please enter a valid email address!");
       return;
     }
 
     if (!passwordRegex.test(password)) {
       toast.error(
-        "❌ Password must be 8+ characters with uppercase, lowercase, number, and special character."
+        "Password must be 8+ characters with uppercase, lowercase, number, and special character."
       );
       return;
     }
 
     try {
       const response = await axiosInstance.post("/auth/register", formData);
-      toast.success(response.data.message || "✅ Registration successful!");
+      toast.success(response.data.message || "Registration successful!");
       setTimeout(() => navigate("/login"), 1500);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "❌ Registration failed");
+      toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 

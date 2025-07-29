@@ -18,18 +18,18 @@ export default function Login() {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
     if (!email || !password) {
-      toast.error("❌ Email and password are required!");
+      toast.error("Email and password are required!");
       return;
     }
 
     if (!emailRegex.test(email)) {
-      toast.error("❌ Please enter a valid email address!");
+      toast.error("Please enter a valid email address!");
       return;
     }
 
     if (!passwordRegex.test(password)) {
       toast.error(
-        "❌ Password must be 8+ characters with uppercase, lowercase, number, and special character."
+        "Password must be 8+ characters with uppercase, lowercase, number, and special character."
       );
       return;
     }
@@ -45,14 +45,14 @@ export default function Login() {
       };
       localStorage.setItem("user", JSON.stringify(userData));
 
-      toast.success("✅ Login successful!");
+      toast.success("Login successful!");
       setTimeout(() => {
         navigate(
           response.data.role === "admin" ? "/AllFeedBacks" : "/Feedback"
         );
       }, 1500);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "❌ Login failed");
+      toast.error(error.response?.data?.message || " Login failed");
     }
   };
 

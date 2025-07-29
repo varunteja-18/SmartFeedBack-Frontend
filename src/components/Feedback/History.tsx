@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./History.css";
 import axiosInstance from "../../api/axiosInstance";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface FeedbackItem {
   username: string;
@@ -17,7 +19,8 @@ const History = () => {
         const response = await axiosInstance.get("/feedback/user"); // API must return user's feedback
         setUserFeedbacks(response.data);
       } catch (error) {
-        console.error("Failed to fetch feedback history", error);
+        // console.error("Failed to fetch feedback history", error);
+        toast.error("Failed to fetch feedback history: "+error);
       }
     };
 
